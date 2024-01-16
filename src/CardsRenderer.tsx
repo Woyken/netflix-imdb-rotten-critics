@@ -1,5 +1,9 @@
 import { createSignal, For } from "solid-js";
 import { Portal } from "solid-js/web";
+import { SmallCard } from "./cards/SmallCard";
+import { HoverSmallCard } from "./cards/HoverSmallCard";
+import { PreviewModal } from "./cards/PreviewModal";
+import { Billboard } from "./cards/Billboard";
 
 // Preview on card hover, `previewModal--container mini-modal has-smaller-buttons`
 // Card, `title-card`
@@ -67,10 +71,12 @@ const useRenderPreviewElementsLists = () => {
   const [smallCardsList, elementsListAddCb0, elementsListRemoveCb0] =
     useQuerySelectorElements(".title-card");
   const [hoverPreviewCardsList, elementsListAddCb1, elementsListRemoveCb1] =
-    useQuerySelectorElements(".previewModal--container.mini-modal");
+    useQuerySelectorElements(
+      ".previewModal--container.mini-modal .previewModal--info"
+    );
   const [bigPreviewPopupList, elementsListAddCb2, elementsListRemoveCb2] =
     useQuerySelectorElements(
-      ".previewModal--container.detail-modal .ptrack-container"
+      ".previewModal--container.detail-modal .previewModal--detailsMetadata"
     );
   const [billboardList, elementsListAddCb3, elementsListRemoveCb3] =
     useQuerySelectorElements(".billboard.billboard-pane .logo-and-text");
@@ -111,28 +117,28 @@ export const CardsRenderer = () => {
       <For each={[...smallCardsList()]}>
         {(cardNode) => (
           <Portal mount={cardNode}>
-            <div style={{ color: "red" }}>small card!</div>
+            <SmallCard />
           </Portal>
         )}
       </For>
       <For each={[...hoverPreviewCardsList()]}>
         {(cardNode) => (
           <Portal mount={cardNode}>
-            <div style={{ color: "red" }}>Hover small card!</div>
+            <HoverSmallCard />
           </Portal>
         )}
       </For>
       <For each={[...bigPreviewPopupList()]}>
         {(cardNode) => (
           <Portal mount={cardNode}>
-            <div style={{ color: "red" }}>Big card preview!</div>
+            <PreviewModal />
           </Portal>
         )}
       </For>
       <For each={[...billboardList()]}>
         {(cardNode) => (
           <Portal mount={cardNode}>
-            <div style={{ color: "red" }}>Billboard card!</div>
+            <Billboard />
           </Portal>
         )}
       </For>
