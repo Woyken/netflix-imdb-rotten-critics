@@ -9,7 +9,7 @@ export default defineConfig({
       entry: 'src/index.tsx',
       userscript: {
         author: 'Woyken',
-        icon: 'https://vitejs.dev/logo.svg',
+        icon: 'https://raw.githubusercontent.com/Woyken/netflix-imdb-rotten-critics/main/public/imdbRottenCritics_icon.png',
         namespace: 'https://github.com/Woyken/netflix-imdb-rotten-critics',
         match: ['https://www.netflix.com/*'],
       },
