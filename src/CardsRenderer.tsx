@@ -60,6 +60,17 @@ const useQuerySelectorElements = (querySelector: string) => {
     );
   };
 
+  // createEffect(() => {
+  //   const elements = queriedElementsList();
+  //   for (const element of elements) {
+  //     const obs = new MutationObserver((ev) => {
+  //       console.log("CLASS CHANGED", element);
+  //     });
+  //     obs.observe(element, { attributes: true });
+  //     onCleanup(() => obs.disconnect());
+  //   }
+  // });
+
   return [
     queriedElementsList,
     addedElementCallback,
@@ -67,6 +78,9 @@ const useQuerySelectorElements = (querySelector: string) => {
   ] as const;
 };
 
+// TODO, problem, netflix reuses hover popup card as preview modal if you click on more info.
+// Element doesn't get recreated, `class` gets updated.
+// Probably should observe current elements for attribute changes
 const useRenderPreviewElementsLists = () => {
   const [smallCardsList, elementsListAddCb0, elementsListRemoveCb0] =
     useQuerySelectorElements(".title-card");
@@ -131,7 +145,7 @@ export const CardsRenderer = () => {
       <For each={[...bigPreviewPopupList()]}>
         {(cardNode) => (
           <Portal mount={cardNode}>
-            <PreviewModal />
+            <PreviewModal previewModalElement={cardNode} />
           </Portal>
         )}
       </For>

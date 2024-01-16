@@ -1,10 +1,15 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
+  '@tanstack/query-sync-storage-persister':
+    specifier: ^5.17.15
+    version: 5.17.15
+  '@tanstack/solid-query':
+    specifier: ^5.17.15
+    version: 5.17.15(solid-js@1.8.11)
+  '@tanstack/solid-query-persist-client':
+    specifier: ^5.17.15
+    version: 5.17.15(@tanstack/solid-query@5.17.15)(solid-js@1.8.11)
   solid-js:
     specifier: ^1.8.11
     version: 1.8.11
@@ -693,6 +698,43 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@tanstack/query-core@5.17.15:
+    resolution: {integrity: sha512-QURxpu77/ICA4d61aPvV7EcJ2MwmksxUejKBaq/xLcO2TUJAlXf4PFKHC/WxnVFI/7F1jeLx85AO3Vpk0+uBXw==}
+    dev: false
+
+  /@tanstack/query-persist-client-core@5.17.15:
+    resolution: {integrity: sha512-u9wqfxwjIeNeuohCENztwTo2qkCEwMeFex2H5X7qpRWlbA2d9cMxeYizQ/7TW9GVyKIEqt653TGivkyviN1N7w==}
+    dependencies:
+      '@tanstack/query-core': 5.17.15
+    dev: false
+
+  /@tanstack/query-sync-storage-persister@5.17.15:
+    resolution: {integrity: sha512-xWJrrIPJzkbDPrIakMuMqIoPAclx+4m+o4V7ahn7hBWYddqX3YNGmsxsH3GJIudJZ73rDiP+o0C30I6i7XpuXg==}
+    dependencies:
+      '@tanstack/query-core': 5.17.15
+      '@tanstack/query-persist-client-core': 5.17.15
+    dev: false
+
+  /@tanstack/solid-query-persist-client@5.17.15(@tanstack/solid-query@5.17.15)(solid-js@1.8.11):
+    resolution: {integrity: sha512-CW5Jnq9o3HOcslG2G5fmvIFFt2cQLY147syirtySVCMSFSJVgkK52nPuJTcUyOZurye21R+LuDBVtcFcHDLNeg==}
+    peerDependencies:
+      '@tanstack/solid-query': 5.17.15
+      solid-js: ^1.6.0
+    dependencies:
+      '@tanstack/query-persist-client-core': 5.17.15
+      '@tanstack/solid-query': 5.17.15(solid-js@1.8.11)
+      solid-js: 1.8.11
+    dev: false
+
+  /@tanstack/solid-query@5.17.15(solid-js@1.8.11):
+    resolution: {integrity: sha512-O8RUqvv630MyU2PpUq7uMPO0nCL/RsIp4aLUGJclPovf9PvdgNuzQM0cFCYPHyegM2pZRjMK7Ek4wTAOKXdBhg==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@tanstack/query-core': 5.17.15
+      solid-js: 1.8.11
+    dev: false
 
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1438,3 +1480,7 @@ packages:
   /yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
