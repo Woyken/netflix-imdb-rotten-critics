@@ -1,6 +1,6 @@
 import { Show, createMemo } from "solid-js";
 import { Portal } from "solid-js/web";
-import { useOmdbSearch } from "../queries/imdbQuery";
+import { useImdbSearch } from "../queries/imdbQuery";
 
 export const PreviewModalBig = (props: { previewModalElement: Element }) => {
   const title = createMemo(
@@ -13,7 +13,7 @@ export const PreviewModalBig = (props: { previewModalElement: Element }) => {
     () => props.previewModalElement.querySelector(".year")?.innerHTML
   );
 
-  const searchQuery = useOmdbSearch(title, year);
+  const searchQuery = useImdbSearch(title, year);
 
   const el = createMemo(() =>
     props.previewModalElement.querySelector(".previewModal--detailsMetadata")
@@ -25,12 +25,24 @@ export const PreviewModalBig = (props: { previewModalElement: Element }) => {
         <div style={{ color: "orange" }}>IMDB: Loading...</div>
       </Show>
       <Show when={!!searchQuery.data}>
-        <Show
-          when={searchQuery.data?.imdbRating !== "N/A"}
-          fallback={<div style={{ color: "red" }}>IMDB: N/A</div>}
-        >
+        <Show when={searchQuery.data?.type === "unknownError"}>
           <div style={{ color: "red" }}>
-            IMDB: {searchQuery.data?.imdbRating}
+            IMDB:{" "}
+            {searchQuery.data?.type === "unknownError" &&
+              searchQuery.data.error}
+          </div>
+        </Show>
+        <Show when={searchQuery.data?.type === "ratingNotFound"}>
+          <div style={{ color: "red" }}>IMDB: N/A</div>
+        </Show>
+        <Show when={searchQuery.data?.type === "movieNotFound"}>
+          <div style={{ color: "red" }}>IMDB: 404</div>
+        </Show>
+        <Show when={searchQuery.data?.type === "ratingFound"}>
+          <div style={{ color: "red" }}>
+            IMDB:{" "}
+            {searchQuery.data?.type === "ratingFound" &&
+              searchQuery.data.imdbRating}
           </div>
         </Show>
         <Show when={searchQuery.isFetching}>

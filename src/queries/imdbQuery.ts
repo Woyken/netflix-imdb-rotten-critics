@@ -1,14 +1,8 @@
 import { createQuery } from "@tanstack/solid-query";
 import { Accessor } from "solid-js";
+import { omdbSearchImdbRatings } from "../apis/omdbApiClient";
 
-type OmdbResponse = {
-  imdbRating: string;
-};
-
-const omdbUrl = new URL("https://www.omdbapi.com/");
-omdbUrl.searchParams.set("apikey", "e254bb8d");
-
-export const useOmdbSearch = (
+export const useImdbSearch = (
   titleSearch: Accessor<string | undefined>,
   year: Accessor<string | undefined>
 ) => {
@@ -18,15 +12,15 @@ export const useOmdbSearch = (
     return {
       queryKey: ["omdb", "title search", searchTitle, searchYear],
       queryFn: async ({ signal }) => {
-        const uri = new URL(omdbUrl);
-        uri.searchParams.set("t", searchTitle!);
-        uri.searchParams.set("y", searchYear!);
+        if (!searchTitle) throw new Error("missing search title");
 
-        const response = await fetch(uri, { signal });
-        const data = await response.json();
-        if (data.Response === "False") throw data.Error;
-
-        return data as OmdbResponse;
+        const data = await omdbSearchImdbRatings(
+          searchTitle,
+          searchYear,
+          signal
+        );
+        // I wonder if it's possible to change "gcTime(cacheTime)" now that I know Omdb doesn't have the data yet
+        return data;
       },
       enabled: !!searchTitle && !!searchYear,
       refetchOnWindowFocus: false,
