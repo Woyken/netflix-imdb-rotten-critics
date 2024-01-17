@@ -79,11 +79,13 @@ type OmdbSearchResult =
 export const omdbSearchImdbRatings = async (
   searchTitle: string,
   searchYear?: string,
+  type?: "movie" | "series" | "episode",
   signal?: AbortSignal
 ): Promise<OmdbSearchResult> => {
   const uri = new URL(omdbUrl);
   uri.searchParams.set("t", searchTitle);
   if (searchYear) uri.searchParams.set("y", searchYear);
+  if (type) uri.searchParams.set("type", type);
 
   const response = await fetch(uri, { signal });
   const data: OmdbApiSearchResponseModel = await response.json();

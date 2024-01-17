@@ -13,11 +13,14 @@ export const PreviewModalBig = (props: { previewModalElement: Element }) => {
     () => props.previewModalElement.querySelector(".year")?.innerHTML
   );
 
-  const searchQuery = useImdbSearch(title, year);
-
   const el = createMemo(() =>
     props.previewModalElement.querySelector(".previewModal--detailsMetadata")
   );
+
+  const isSeries = createMemo(
+    () => !!props.previewModalElement.querySelector(".episodeSelector")
+  );
+  const searchQuery = useImdbSearch(title, year, isSeries);
 
   return (
     <Portal mount={el() ?? undefined}>
