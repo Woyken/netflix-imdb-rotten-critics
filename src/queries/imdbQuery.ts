@@ -19,10 +19,14 @@ export const useImdbSearch = (
           searchYear,
           signal
         );
+        if (data.type === "ratingFound" || data.type === "ratingNotFound")
+          return data;
         // I wonder if it's possible to change "gcTime(cacheTime)" now that I know Omdb doesn't have the data yet
-        return data;
+        if (searchYear)
+          // Try to find movie without year, sometimes netflix will have newer dates than actual release date
+          return await omdbSearchImdbRatings(searchTitle, undefined, signal);
       },
-      enabled: !!searchTitle && !!searchYear,
+      enabled: !!searchTitle,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
     };

@@ -24,6 +24,11 @@ export const PreviewModalBig = (props: { previewModalElement: Element }) => {
       <Show when={searchQuery.isLoading}>
         <div style={{ color: "orange" }}>IMDB: Loading...</div>
       </Show>
+      <Show when={searchQuery.isError}>
+        <div style={{ color: "red" }}>
+          IMDB: Error {searchQuery.error?.message}
+        </div>
+      </Show>
       <Show when={!!searchQuery.data}>
         <Show when={searchQuery.data?.type === "unknownError"}>
           <div style={{ color: "red" }}>
@@ -39,7 +44,7 @@ export const PreviewModalBig = (props: { previewModalElement: Element }) => {
           <div style={{ color: "red" }}>IMDB: 404</div>
         </Show>
         <Show when={searchQuery.data?.type === "ratingFound"}>
-          <div style={{ color: "red" }}>
+          <div style={{ color: "orange" }}>
             IMDB:{" "}
             {searchQuery.data?.type === "ratingFound" &&
               searchQuery.data.imdbRating}
