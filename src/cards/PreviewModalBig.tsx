@@ -2,9 +2,7 @@ import { Show, createMemo } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useOmdbSearch } from "../queries/imdbQuery";
 
-export const PreviewModalBig = (props: {
-  previewModalElement: Element;
-}) => {
+export const PreviewModalBig = (props: { previewModalElement: Element }) => {
   const title = createMemo(
     () =>
       props.previewModalElement
@@ -23,8 +21,21 @@ export const PreviewModalBig = (props: {
 
   return (
     <Portal mount={el() ?? undefined}>
-      <Show when={!!searchQuery.data && searchQuery.data?.imdbRating !== "N/A"}>
-        <div style={{ color: "red" }}>IMDB {searchQuery.data?.imdbRating}</div>
+      <Show when={searchQuery.isLoading}>
+        <div style={{ color: "orange" }}>IMDB: Loading...</div>
+      </Show>
+      <Show when={!!searchQuery.data}>
+        <Show
+          when={searchQuery.data?.imdbRating !== "N/A"}
+          fallback={<div>IMDB: N/A</div>}
+        >
+          <div style={{ color: "red" }}>
+            IMDB: {searchQuery.data?.imdbRating}
+          </div>
+        </Show>
+        <Show when={searchQuery.isFetching}>
+          <p style={{ color: "yellow" }}>...</p>
+        </Show>
       </Show>
     </Portal>
   );
