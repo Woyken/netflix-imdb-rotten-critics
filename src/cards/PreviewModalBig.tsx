@@ -27,7 +27,7 @@ export const PreviewModalBig = (props: { previewModalElement: Element }) => {
       <Show when={!!searchQuery.data}>
         <Show
           when={searchQuery.data?.imdbRating !== "N/A"}
-          fallback={<div>IMDB: N/A</div>}
+          fallback={<div style={{ color: "red" }}>IMDB: N/A</div>}
         >
           <div style={{ color: "red" }}>
             IMDB: {searchQuery.data?.imdbRating}
