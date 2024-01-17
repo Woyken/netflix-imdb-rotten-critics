@@ -14,7 +14,7 @@ export const useOmdbSearch = (
 ) => {
   return createQuery(() => {
     const searchTitle = titleSearch();
-    const searchYear = year()
+    const searchYear = year();
     return {
       queryKey: ["omdb", "title search", searchTitle, searchYear],
       queryFn: async ({ signal }) => {
@@ -23,8 +23,10 @@ export const useOmdbSearch = (
         uri.searchParams.set("y", searchYear!);
 
         const response = await fetch(uri, { signal });
-        const data = (await response.json()) as OmdbResponse;
-        return data;
+        const data = await response.json();
+        if (data.Response === "False") throw data.Error;
+
+        return data as OmdbResponse;
       },
       enabled: !!searchTitle && !!searchYear,
       refetchOnWindowFocus: false,

@@ -1,8 +1,7 @@
-import { createSignal, For } from "solid-js";
+import { createEffect, createSignal, For, onCleanup } from "solid-js";
 import { Portal } from "solid-js/web";
 import { SmallCard } from "./cards/SmallCard";
-import { HoverSmallCard } from "./cards/HoverSmallCard";
-import { PreviewModal } from "./cards/PreviewModal";
+import { PreviewModalBigOrSmall } from "./cards/PreviewModal";
 import { Billboard } from "./cards/Billboard";
 
 // Preview on card hover, `previewModal--container mini-modal has-smaller-buttons`
@@ -36,6 +35,7 @@ const useMutations = (
   });
 
   obs.observe(document.body, { childList: true, subtree: true });
+  onCleanup(() => obs.disconnect());
 };
 
 const useQuerySelectorElements = (querySelector: string) => {
@@ -47,7 +47,8 @@ const useQuerySelectorElements = (querySelector: string) => {
       addedNode,
       ...addedNode.querySelectorAll(querySelector),
     ].filter((x) => x.matches(querySelector));
-    setQueriedElementsList((prev) => new Set([...prev, ...cardElements]));
+    if (cardElements.length > 0)
+      setQueriedElementsList((prev) => new Set([...prev, ...cardElements]));
   };
   const removedElementCallback = (removedNode: HTMLElement) => {
     if (queriedElementsList().has(removedNode))
@@ -55,21 +56,11 @@ const useQuerySelectorElements = (querySelector: string) => {
         (prev) => new Set([...[...prev].filter((p) => p !== removedNode)])
       );
     const cardElements = new Set(removedNode.querySelectorAll(querySelector));
-    setQueriedElementsList(
-      (prev) => new Set([...[...prev].filter((p) => !cardElements.has(p))])
-    );
+    if (cardElements.size > 0)
+      setQueriedElementsList(
+        (prev) => new Set([...[...prev].filter((p) => !cardElements.has(p))])
+      );
   };
-
-  // createEffect(() => {
-  //   const elements = queriedElementsList();
-  //   for (const element of elements) {
-  //     const obs = new MutationObserver((ev) => {
-  //       console.log("CLASS CHANGED", element);
-  //     });
-  //     obs.observe(element, { attributes: true });
-  //     onCleanup(() => obs.disconnect());
-  //   }
-  // });
 
   return [
     queriedElementsList,
@@ -78,53 +69,60 @@ const useQuerySelectorElements = (querySelector: string) => {
   ] as const;
 };
 
-// TODO, problem, netflix reuses hover popup card as preview modal if you click on more info.
-// Element doesn't get recreated, `class` gets updated.
-// Probably should observe current elements for attribute changes
+const queryBillboardElements = ".billboard.billboard-pane";
+const queryPreviewModalElements = ".previewModal--container";
+const queryCardElements = ".title-card";
+
 const useRenderPreviewElementsLists = () => {
   const [smallCardsList, elementsListAddCb0, elementsListRemoveCb0] =
-    useQuerySelectorElements(".title-card");
-  const [hoverPreviewCardsList, elementsListAddCb1, elementsListRemoveCb1] =
-    useQuerySelectorElements(
-      ".previewModal--container.mini-modal .previewModal--info"
-    );
-  const [bigPreviewPopupList, elementsListAddCb2, elementsListRemoveCb2] =
-    useQuerySelectorElements(
-      ".previewModal--container.detail-modal .previewModal--detailsMetadata"
-    );
-  const [billboardList, elementsListAddCb3, elementsListRemoveCb3] =
-    useQuerySelectorElements(".billboard.billboard-pane .logo-and-text");
+    useQuerySelectorElements(queryCardElements);
+  const [previewModalList, elementsListAddCb1, elementsListRemoveCb1] =
+    useQuerySelectorElements(queryPreviewModalElements);
+  const [billboardList, elementsListAddCb2, elementsListRemoveCb2] =
+    useQuerySelectorElements(queryBillboardElements);
 
+  // TODO cleanup this Observer mess
+  const attributeClassObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.target instanceof HTMLElement) {
+        elementsListRemoveCb0(mutation.target);
+        elementsListRemoveCb1(mutation.target);
+        elementsListRemoveCb2(mutation.target);
+        elementsListAddCb0(mutation.target);
+        elementsListAddCb1(mutation.target);
+        elementsListAddCb2(mutation.target);
+      }
+    }
+  });
+  createEffect(() => {
+    [...smallCardsList(), ...previewModalList(), ...billboardList()].forEach(
+      (el) =>
+        attributeClassObserver.observe(el, {
+          attributes: true,
+          attributeFilter: ["class"],
+        })
+    );
+    onCleanup(() => attributeClassObserver.disconnect());
+  });
   useMutations(
     (addedNode) => {
       elementsListAddCb0(addedNode);
       elementsListAddCb1(addedNode);
       elementsListAddCb2(addedNode);
-      elementsListAddCb3(addedNode);
     },
     (removedNode) => {
       elementsListRemoveCb0(removedNode);
       elementsListRemoveCb1(removedNode);
       elementsListRemoveCb2(removedNode);
-      elementsListRemoveCb3(removedNode);
     }
   );
 
-  return [
-    smallCardsList,
-    hoverPreviewCardsList,
-    bigPreviewPopupList,
-    billboardList,
-  ] as const;
+  return [smallCardsList, previewModalList, billboardList] as const;
 };
 
 export const CardsRenderer = () => {
-  const [
-    smallCardsList,
-    hoverPreviewCardsList,
-    bigPreviewPopupList,
-    billboardList,
-  ] = useRenderPreviewElementsLists();
+  const [smallCardsList, previewModalList, billboardList] =
+    useRenderPreviewElementsLists();
 
   return (
     <>
@@ -135,17 +133,10 @@ export const CardsRenderer = () => {
           </Portal>
         )}
       </For>
-      <For each={[...hoverPreviewCardsList()]}>
+      <For each={[...previewModalList()]}>
         {(cardNode) => (
           <Portal mount={cardNode}>
-            <HoverSmallCard />
-          </Portal>
-        )}
-      </For>
-      <For each={[...bigPreviewPopupList()]}>
-        {(cardNode) => (
-          <Portal mount={cardNode}>
-            <PreviewModal previewModalElement={cardNode} />
+            <PreviewModalBigOrSmall previewModalElement={cardNode} />
           </Portal>
         )}
       </For>
