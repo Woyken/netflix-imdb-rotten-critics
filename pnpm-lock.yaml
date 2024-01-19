@@ -1,6 +1,13 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
+  '@solid-primitives/mutation-observer':
+    specifier: ^1.1.15
+    version: 1.1.15(solid-js@1.8.11)
   '@tanstack/query-sync-storage-persister':
     specifier: ^5.17.15
     version: 5.17.15
@@ -698,6 +705,23 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@solid-primitives/mutation-observer@1.1.15(solid-js@1.8.11):
+    resolution: {integrity: sha512-Ebx7vkjd+lkmxRFCqxzM7xFqzxP2dsFBohjmTqjsYJTyCldsH556FAPlEPKDZGMpnwwH6NfB4ryR5t78P70NnA==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.2.2(solid-js@1.8.11)
+      solid-js: 1.8.11
+    dev: false
+
+  /@solid-primitives/utils@6.2.2(solid-js@1.8.11):
+    resolution: {integrity: sha512-11ypVbp987XxETeRqY5Y3OmmTpm8/jZqJXRvo6AyqBthzkvvjEdReuUMU2yVb+pwWGxfZpWHZ6EUCcGXUMhfwg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.8.11
+    dev: false
 
   /@tanstack/query-core@5.17.15:
     resolution: {integrity: sha512-QURxpu77/ICA4d61aPvV7EcJ2MwmksxUejKBaq/xLcO2TUJAlXf4PFKHC/WxnVFI/7F1jeLx85AO3Vpk0+uBXw==}
@@ -1480,7 +1504,3 @@ packages:
   /yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
