@@ -3,6 +3,9 @@ import { Portal } from "solid-js/web";
 import { useImdbSearch } from "../queries/imdbQuery";
 import { useObserveQuerySelector } from "../hooks/useObserveQuerySelector";
 
+// Probably should rely more on constant attributes like `data-uia="videoMetadata--container"`
+// Netflix uses react, so we get placeholder view rendered without any data
+// Then it renders all the data inside, reusing some elements, and re-attaching some classes to already existing elements.
 export const PreviewModalBig = (props: { previewModalElement: Element }) => {
   const aboutTitleElement = useObserveQuerySelector(
     () => props.previewModalElement,

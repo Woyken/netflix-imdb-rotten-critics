@@ -9,10 +9,6 @@ export const useObserveQuerySelector = (
     parentElementToQuery()?.querySelector(querySelector) ?? undefined
   );
 
-  createEffect(() => {
-    console.log(parentElementToQuery()?.innerHTML);
-  })
-
   const [mutationObserverAdd, mutationObserverCtx] = createMutationObserver(
     [],
     { subtree: true, childList: true },
